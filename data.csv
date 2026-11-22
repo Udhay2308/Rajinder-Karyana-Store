@@ -1,0 +1,26 @@
+item_id,item_name,category,pack_size,cost_price,selling_price,current_stock,avg_daily_sales,reorder_threshold,expiry_date,shelf_location,last_restocked_date,notes
+ITM001,Parle-G Gold,Biscuits,100g,9.0,10.0,7,4.2,5,2025-04-15,Front Glass Counter,2024-11-12,Fast seller
+ITM002,Amul Taaza Milk,Dairy,500ml,25.5,27.0,3,6.5,4,2024-11-25,Deep Freezer,2024-11-21,Expires in 3 days
+ITM003,Modern Sandwich Bread,Bakery,400g,35.0,40.0,9,5.1,4,2024-11-26,Back Shelf,2024-11-20,Expiring soon - extra carton taken on distributor discount
+ITM004,Aashirvaad Atta,Staples,5kg,232.0,255.0,6,1.8,3,2025-03-10,Floor Rack,2024-11-09,
+ITM005,Tata Salt,Staples,1kg,22.0,28.0,0,2.9,5,2025-09-30,Middle Rack,2024-11-05,OUT OF STOCK - distributor delivery delayed
+ITM006,Fortune Soyabean Oil,Staples,1L pouch,118.0,129.0,13,2.4,6,2025-06-18,Oil Corner,2024-11-14,
+ITM007,Maggi 2-Minute Noodles,Instant Food,70g,12.0,14.0,18,3.7,8,2025-05-02,Front Glass Counter,2024-11-16,Fast seller
+ITM008,Kurkure Masala Munch,Snacks,38g,8.5,10.0,23,2.6,8,2025-01-20,Hanging Rack,2024-11-18,
+ITM009,Haldiram Aloo Bhujia,Namkeen,200g,42.0,50.0,11,1.3,4,2024-12-04,Back Shelf,2024-09-28,Expires in 12 days - slow mover
+ITM010,Surf Excel Easy Wash,Home Care,1kg,108.0,120.0,5,0.8,3,2026-02-01,Top Shelf,2024-10-30,
+ITM011,Lifebuoy Total Soap,Personal Care,100g,28.0,32.0,14,1.1,5,2026-08-12,Side Rack,2024-11-03,
+ITM012,Clinic Plus Shampoo Sachet,Personal Care,6ml,0.9,1.0,37,5.8,15,2026-03-15,Hanging Strip,2024-11-10,Sold in strips of 16
+ITM013,Red Label Tea,Beverages,250g,112.0,125.0,8,0.9,3,2025-08-20,Middle Rack,2024-10-27,
+ITM014,Everest Turmeric Powder,Spices,100g,26.0,30.0,4,0.7,3,2025-07-11,Spice Shelf,2024-10-22,1 pack damaged - rat-nibbled corner
+ITM015,Amul Butter,Dairy,100g,53.0,58.0,0,1.9,3,2025-02-14,Deep Freezer,2024-11-08,OUT OF STOCK - sold out on Thursday
+ITM016,Britannia Good Day Cashew,Biscuits,60g,9.5,10.0,16,2.2,6,2025-03-28,Front Glass Counter,2024-11-13,
+ITM017,Toor Dal (Loose Packed),Staples,1kg,138.0,155.0,12,2.1,5,2025-05-30,Floor Rack,2024-11-11,Packed in-house in polybags
+ITM018,Colgate Strong Teeth,Personal Care,100g,48.0,55.0,7,1.0,4,2026-01-09,Side Rack,2024-11-01,
+ITM019,Mother Dairy Dahi,Dairy,400g,32.0,36.0,6,2.7,4,2024-12-02,Deep Freezer,2024-11-19,Expires in 10 days
+ITM020,Bisleri Water Bottle,Beverages,1L,14.0,20.0,19,3.4,8,2026-06-05,Floor Rack,2024-11-15,
+ITM021,Vim Dishwash Bar,Home Care,125g,9.5,10.0,13,1.6,5,2026-04-22,Top Shelf,2024-11-06,
+ITM022,Sugar (Loose),Staples,1kg,41.0,46.0,17,3.9,8,2025-10-01,Floor Rack,2024-11-17,Fast seller
+ITM023,Lay's Magic Masala,Snacks,26g,8.5,10.0,21,2.3,8,2025-01-08,Hanging Rack,2024-11-18,
+ITM024,Patanjali Dant Kanti,Personal Care,100g,46.0,52.0,2,0.4,3,2025-12-17,Side Rack,2024-09-14,Below threshold - reorder due
+ITM025,Santoor Sandal Soap,Personal Care,75g,31.0,35.0,9,1.2,4,2026-05-03,Side Rack,2024-11-04,
