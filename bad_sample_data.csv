@@ -5,3 +5,4 @@ BAD002,Missing Date Atta,Staples,5kg,232.0,255.0,6,1.8,3,,Floor Rack,2024-11-09,
 BAD003,Negative Price Oil,Staples,1L pouch,-118.0,129.0,13,2.4,6,2025-06-18,Oil Corner,2024-11-14,Bad row - negative cost price
 BAD004,Bad Date Format Sugar,Staples,1kg,41.0,46.0,17,3.9,8,22/11/2025,Floor Rack,2024-11-17,Bad row - slash date instead of YYYY-MM-DD
 ITM002,Good Day Butter,Biscuits,60g,9.5,10.0,16,2.2,6,2025-03-28,Front Glass Counter,2024-11-13,Valid row 2
+

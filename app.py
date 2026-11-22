@@ -122,7 +122,7 @@ def restock_item():
 
 @app.route('/api/summary')
 def api_summary():
-    """JSON endpoint for automated testing / viva evaluation."""
+    """JSON endpoint for healthcheck and summary statistics."""
     ref_date = get_current_ref_date(request.args)
     summary = inventory.audit_inventory(DATA_FILE, ref_date=ref_date)
     return jsonify({
@@ -140,3 +140,4 @@ if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     print(f"\n🚀 Starting Rajinder Karyana Store Dashboard on http://127.0.0.1:{port}")
     app.run(host='127.0.0.1', port=port, debug=False)
+

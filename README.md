@@ -113,14 +113,18 @@ Every honest tool has clear boundaries. This tool **must NOT be trusted for**:
 
 ---
 
-## 6. Viva Call Preparation & Panel Cheatsheet
+## 6. Verification & Automated Testing
 
-| Evaluator Question | Exact Grounded Answer to Give in Viva Call |
-| :--- | :--- |
-| **"Pick one data row and ask where you were when you recorded it."** | *"Take row `ITM015` (Amul Butter 100g). I was crouching in front of the single-door white deep freezer in the dark back-left corner of the shop at 3:32 PM on Saturday. When I opened the sliding lid, there was only frost and frozen peas; the butter basket was completely empty. Rajinder uncle had no idea it had run out on Thursday."* |
-| **"What did the shopkeeper say that changed your initial plan?"** | *"I planned to build a fancy weekly demand forecasting algorithm. But Rajinder uncle said, 'Beta, I don't care about forecasts; the distributor comes on Tuesday morning, and I just need to know what to write on my cardboard scrap so I don't look foolish when customers ask for salt.' That completely killed my complex math and made me focus 100% on a simple Red/Amber action sheet."* |
-| **"Change a threshold live."** | Open `inventory.py` lines 18-20 or adjust the sliders in the web dashboard: change `DEFAULT_EXPIRY_WARNING_DAYS` from `14` to `7` or `stockout_days` from `2.0` to `4.0`. Show that the output instantly re-classifies items live without restarting the server. |
-| **"Feed the tool a bad row."** | Run `python test_bad_row.py` or feed `bad_sample_data.csv`. Show that corrupt numbers like `'FIVE'`, missing fields, or slash-dates are captured safely with clear line-number warnings while all valid rows process uninterrupted without any crash. |
+The project includes automated validation to ensure the tool runs reliably in a real shop environment:
+
+### Error Resilience Test
+Run the test suite to verify that corrupt data rows (invalid numbers, missing fields, or incorrect date formats) are caught and reported without crashing the application:
+```bash
+python test_bad_row.py
+```
+
+### Configurable Parameters
+All business thresholds (expiry alert horizons, stockout risk days, and weekly delivery cycles) are dynamic. They can be updated either in `inventory.py` or directly through the web interface controls, allowing the tool to adapt if distributor visit schedules change.
 
 ---
 
@@ -138,5 +142,6 @@ Every honest tool has clear boundaries. This tool **must NOT be trusted for**:
 │   └── chat_history.md
 ├── assets/                # Fieldwork photographic evidence
 │   └── README.txt
-└── README.md              # Project overview, real outputs, viva cheatsheet & limitations
+└── README.md              # Project overview, real outputs, architecture & limitations
 ```
+

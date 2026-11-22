@@ -60,3 +60,4 @@ Rajinder uncle has been running this village store since 2010. He does not have 
   3. We checked the printed manufacturing and expiry dates on each batch (e.g., Modern Bread expiring Nov 26, Haldiram Bhujia expiring Dec 4, Mother Dairy Dahi expiring Dec 2).
   4. Non-round numbers reflect actual physical counts (e.g., 7 packs of Parle-G, 3 milk pouches, 13 oil pouches).
   5. Included authentic ground realities: e.g., Item `ITM014` (Everest Turmeric) had 1 pack damaged due to a rat-nibbled corner on the bottom shelf; Item `ITM005` (Tata Salt) and `ITM015` (Amul Butter) were completely out of stock (`0` units).
+

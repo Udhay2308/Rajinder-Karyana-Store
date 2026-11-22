@@ -46,3 +46,4 @@
 * **Note 1:** Identifies packaged bakery, dairy pouches, and confectionery as the top three categories prone to unmonitored retail expiration.
 * **Note 2:** Notes that small shop owners resist digital tools because of complex workflows, English-only interfaces, and fear of cloud data leakage.
 * **Note 3:** Recommends minimal visual interfaces—specifically high-contrast traffic-light cues (Red/Yellow/Green)—as the most effective design for non-tech-educated operators.
+

@@ -138,10 +138,10 @@
         {% endif %}
     {% endwith %}
 
-    <!-- Bad / Skipped Rows Safe Warning Banner (Viva Call Proof) -->
+    <!-- Bad / Skipped Rows Safe Warning Banner -->
     {% if summary.skipped_rows %}
     <div class="corrupt-box">
-        <h4>⚠️ डेटा में त्रुटि मिली (Corrupted/Bad Rows Handled Safely - Code did NOT crash):</h4>
+        <h4>⚠️ डेटा में त्रुटि मिली (Corrupted/Bad Rows Handled Safely):</h4>
         <ul>
             {% for err in summary.skipped_rows %}
                 <li>{{ err }}</li>
@@ -177,9 +177,9 @@
         </div>
     </div>
 
-    <!-- Threshold & Live Evaluation Controls (Answers Viva Question: "Change a threshold live") -->
+    <!-- Threshold & Store Configuration Controls -->
     <div class="control-panel">
-        <h3>⚙️ लाइव कंट्रोल पैनल / थ्रेशोल्ड सेटिंग्स (Live Threshold Adjuster for Viva Evaluation)</h3>
+        <h3>⚙️ लाइव कंट्रोल पैनल / थ्रेशोल्ड सेटिंग्स (Store Configuration & Filters)</h3>
         <form method="GET" action="/" class="controls-form">
             <div class="form-group">
                 <label>रेफरेंस तारीख (Audit Date):</label>
@@ -383,3 +383,4 @@
 </div>
 </body>
 </html>
+

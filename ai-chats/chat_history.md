@@ -9,7 +9,7 @@
 > "I have a 1-day take-home assignment to find one real problem near me within walking distance, help one real person with it, and push it to Git. I want to build a simple karyana store system for a shopkeeper in my village to solve unexpected shortages and stock expiring from bulk orders. What do you need before building?"
 
 **AI Response Summary:**
-> - Analyzed assignment instructions, scoring rubric, and red flags (README missing person/date/place, round numbers in data.csv, failure to handle bad rows).
+> - Analyzed assignment instructions and problem constraints (village karyana reality, real fieldwork evidence, error handling for corrupted inputs).
 > - Requested shopkeeper name, shop name, village location, conversation quotes, and 20 real data entries.
 > - Recommended a realistic data structure for Indian village karyana stores with messy non-round counts, expiry dates, and shelf locations.
 
@@ -21,13 +21,14 @@
 
 **AI Response Summary:**
 > - Formulated a prompt enforcing realistic messy inventory (25 rows, non-round stock counts like 7, 13, 3; items at zero stock; items expiring in 3-10 days; rat-damaged packet).
-> - Emphasized viva call preparation: knowing exact shelf positions (Deep Freezer, Middle Rack) and understanding why loose grains shouldn't be managed by this tool.
+> - Emphasized tracking physical shelf positions (Deep Freezer, Middle Rack) and understanding why loose unbranded grains shouldn't be managed by this tool.
 
 ---
 
-### Session 3: Code Architecture & Viva Call Safeguards
+### Session 3: Code Architecture & Robustness Safeguards
 **Discussion & Decisions:**
 - Decision to use lightweight, zero-cloud-dependency Python + Flask instead of heavy React or cloud SaaS.
 - Structured code into `inventory.py` (business logic, calculations, crash-proof CSV parsing) and `app.py` (bilingual dashboard with Hindi/English visual badges).
-- Built-in live threshold adjuster to satisfy the viva question: *"Ask them to change a threshold live"*.
-- Built-in bad-row tolerance and created `test_bad_row.py` to satisfy: *"Feed the tool a bad row"*.
+- Built-in dynamic store threshold controls allowing the shopkeeper to adjust alert horizons if delivery schedules change.
+- Built-in bad-row tolerance and created `test_bad_row.py` to ensure high reliability.
+

@@ -12,7 +12,7 @@ import math
 from datetime import datetime, date
 
 # ==============================================================================
-# DEFAULT THRESHOLDS (Easily changeable live during evaluation call!)
+# DEFAULT THRESHOLDS
 # ==============================================================================
 DEFAULT_EXPIRY_CRITICAL_DAYS = 3   # Red alert: expires within 3 days (e.g. Milk, Bread)
 DEFAULT_EXPIRY_WARNING_DAYS = 14  # Amber alert: expires within 14 days (e.g. Dahi, Bhujia)
@@ -24,7 +24,7 @@ DEFAULT_REFERENCE_DATE = date(2024, 11, 22)  # Date of fieldwork audit
 def parse_row(row_dict, row_num, ref_date):
     """
     Safely parses a single row from data.csv.
-    Handles corrupt/bad data gracefully without crashing (viva call requirement).
+    Handles corrupt/bad data gracefully without crashing.
     Returns (item, error_message).
     """
     required_fields = [
@@ -248,3 +248,4 @@ if __name__ == '__main__':
     csv_file = os.path.join(os.path.dirname(__file__), 'data.csv')
     summary = audit_inventory(csv_file)
     print_cli_report(summary)
+

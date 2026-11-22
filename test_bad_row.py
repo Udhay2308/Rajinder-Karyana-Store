@@ -1,6 +1,6 @@
 """
-test_bad_row.py - Live evaluation test for handling corrupt/bad rows.
-Proves that the application does NOT crash when bad rows are provided.
+test_bad_row.py - Robustness test for handling corrupt/bad data rows.
+Proves that the application catches corrupted input and does not crash.
 """
 
 import os
@@ -26,3 +26,4 @@ def test_handling_bad_rows():
 
 if __name__ == '__main__':
     test_handling_bad_rows()
+
