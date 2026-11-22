@@ -1,5 +1,5 @@
 item_id,item_name,category,pack_size,cost_price,selling_price,current_stock,avg_daily_sales,reorder_threshold,expiry_date,shelf_location,last_restocked_date,notes
-ITM001,Parle-G Gold,Biscuits,100g,9.0,10.0,8,4.2,5,2025-04-15,Front Glass Counter,2026-11-22,Fast seller
+ITM001,Parle-G Gold,Biscuits,100g,9.0,10.0,4,4.2,5,2025-04-15,Front Glass Counter,2026-11-22,Returned 1 packs to distributor on 2026-11-22
 ITM002,Amul Taaza Milk,Dairy,500ml,25.5,27.0,7,6.5,4,2024-11-25,Deep Freezer,2026-11-22,Expires in 3 days
 ITM003,Modern Sandwich Bread,Bakery,400g,35.0,40.0,9,5.1,4,2024-11-26,Back Shelf,2024-11-20,Expiring soon - extra carton taken on distributor discount
 ITM004,Aashirvaad Atta,Staples,5kg,232.0,255.0,6,1.8,3,2025-03-10,Floor Rack,2024-11-09,
