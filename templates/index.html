@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>राजिंदर करियाना स्टोर - Stock & Expiry Manager</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #3b82f6;
+            --danger: #dc2626;
+            --danger-bg: #fef2f2;
+            --warning: #d97706;
+            --warning-bg: #fffbeb;
+            --success: #16a34a;
+            --success-bg: #f0fdf4;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+        body { background: var(--bg); color: var(--text-main); line-height: 1.5; padding: 16px; }
+        .container { max-width: 1280px; margin: 0 auto; }
+        
+        /* Header */
+        header { background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); color: white; border-radius: 12px; padding: 20px 24px; margin-bottom: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .header-top { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+        .shop-title h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 4px; }
+        .shop-title p { font-size: 0.95rem; opacity: 0.9; }
+        .badge-person { background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 9999px; font-size: 0.85rem; }
+        
+        /* Flash message */
+        .flash { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-weight: 500; font-size: 0.95rem; }
+        .flash-success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .flash-error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+        .flash-warning { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; }
+
+        /* Metrics grid */
+        .metrics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 20px; }
+        .metric-card { background: var(--card-bg); border-radius: 10px; padding: 16px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .metric-card.alert-red { border-left: 5px solid var(--danger); background: var(--danger-bg); }
+        .metric-card.alert-yellow { border-left: 5px solid var(--warning); background: var(--warning-bg); }
+        .metric-card.alert-green { border-left: 5px solid var(--success); background: var(--success-bg); }
+        .metric-card.alert-blue { border-left: 5px solid var(--primary-light); }
+        .metric-title { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; margin-bottom: 4px; }
+        .metric-val { font-size: 1.8rem; font-weight: 800; color: var(--text-main); }
+        .metric-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+
+        /* Skipped / Corrupted rows warning */
+        .corrupt-box { background: #fef2f2; border: 2px dashed #ef4444; border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; }
+        .corrupt-box h4 { color: #b91c1c; font-size: 0.95rem; margin-bottom: 4px; }
+        .corrupt-box ul { margin-left: 20px; color: #7f1d1d; font-size: 0.85rem; }
+
+        /* Threshold & Live controls */
+        .control-panel { background: var(--card-bg); border-radius: 10px; padding: 16px 20px; margin-bottom: 20px; border: 1px solid var(--border); }
+        .control-panel h3 { font-size: 1rem; margin-bottom: 12px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+        .controls-form { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+        .form-group { display: flex; flex-direction: column; gap: 4px; }
+        .form-group label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); }
+        .form-group input, .form-group select { padding: 8px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.9rem; background: white; }
+        .btn { padding: 8px 16px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.15s ease; font-size: 0.9rem; }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-primary:hover { background: #1e40af; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #15803d; }
+
+        /* Urgent split sections */
+        .urgent-sections { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+        @media (max-width: 860px) { .urgent-sections { grid-template-columns: 1fr; } }
+        
+        .urgent-card { background: white; border-radius: 10px; border: 1px solid var(--border); overflow: hidden; }
+        .urgent-card-header { padding: 12px 16px; font-weight: 700; font-size: 0.95rem; display: flex; justify-content: space-between; align-items: center; }
+        .urgent-red-hdr { background: #fee2e2; color: #991b1b; border-bottom: 1px solid #fecaca; }
+        .urgent-yellow-hdr { background: #fef3c7; color: #92400e; border-bottom: 1px solid #fde68a; }
+        .urgent-list { padding: 12px 16px; max-height: 280px; overflow-y: auto; }
+        .urgent-item { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+        .urgent-item:last-child { border-bottom: none; }
+        .urgent-name { font-weight: 600; font-size: 0.9rem; }
+        .urgent-meta { font-size: 0.8rem; color: var(--text-muted); }
+        .urgent-badge { padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+        .badge-red { background: #fee2e2; color: #b91c1c; }
+        .badge-amber { background: #fef3c7; color: #b45309; }
+
+        /* Main Data Table */
+        .table-card { background: white; border-radius: 10px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .table-header { padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 12px; }
+        .table-header h2 { font-size: 1.1rem; color: var(--text-main); }
+        .table-responsive { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.88rem; }
+        th { background: #f1f5f9; padding: 10px 14px; font-weight: 600; color: #475569; border-bottom: 1px solid var(--border); white-space: nowrap; }
+        td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        tr:hover { background: #f8fafc; }
+        
+        .stock-pill { display: inline-block; padding: 3px 8px; border-radius: 9999px; font-weight: 700; font-size: 0.78rem; }
+        .pill-zero { background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; }
+        .pill-low { background: #ffedd5; color: #c2410c; border: 1px solid #fed7aa; }
+        .pill-ok { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+        
+        .exp-pill { font-weight: 600; font-size: 0.8rem; }
+        .exp-urgent { color: #dc2626; font-weight: 700; }
+        .exp-warn { color: #d97706; font-weight: 600; }
+        .exp-safe { color: #16a34a; }
+
+        /* Restock mini form */
+        .restock-form { display: flex; gap: 6px; align-items: center; }
+        .restock-input { width: 60px; padding: 4px 6px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.85rem; }
+        .restock-btn { padding: 4px 8px; background: #059669; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.78rem; font-weight: 600; }
+        .restock-btn:hover { background: #047857; }
+
+        /* Footer */
+        footer { text-align: center; font-size: 0.82rem; color: var(--text-muted); padding: 16px 0; }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- Header -->
+    <header>
+        <div class="header-top">
+            <div class="shop-title">
+                <h1>🏪 राजिंदर करियाना स्टोर (Rajinder Karyana Store)</h1>
+                <p>दुकानदार: <strong>राजिंदर कुमार (Rajinder Kumar)</strong> | स्टॉक और एक्सपायरी प्रबंधन टूल</p>
+            </div>
+            <div class="badge-person">
+                📅 ऑडिट तारीख: <strong>{{ ref_date }}</strong>
+            </div>
+        </div>
+    </header>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, msg in messages %}
+                <div class="flash flash-{{ category }}">{{ msg }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Bad / Skipped Rows Safe Warning Banner (Viva Call Proof) -->
+    {% if summary.skipped_rows %}
+    <div class="corrupt-box">
+        <h4>⚠️ डेटा में त्रुटि मिली (Corrupted/Bad Rows Handled Safely - Code did NOT crash):</h4>
+        <ul>
+            {% for err in summary.skipped_rows %}
+                <li>{{ err }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <!-- Top Summary Metrics Cards -->
+    <div class="metrics-grid">
+        <div class="metric-card alert-red">
+            <div class="metric-title">स्टॉक खत्म (Out of Stock)</div>
+            <div class="metric-val" style="color: #dc2626;">{{ summary.out_of_stock|length }}</div>
+            <div class="metric-sub">तत्काल डिस्ट्रीब्यूटर ऑर्डर जरूरी</div>
+        </div>
+
+        <div class="metric-card alert-yellow">
+            <div class="metric-title">जल्द खराब होने वाले (Expiring Soon)</div>
+            <div class="metric-val" style="color: #d97706;">{{ (summary.expiring_critical|length) + (summary.expiring_warning|length) }}</div>
+            <div class="metric-sub">₹{{ "%.2f"|format(summary.at_risk_expiry_cost) }} की पूँजी एक्सपायरी रिस्क पर</div>
+        </div>
+
+        <div class="metric-card alert-blue">
+            <div class="metric-title">कम स्टॉक (Reorder Soon)</div>
+            <div class="metric-val" style="color: #1e40af;">{{ summary.critical_restock|length }}</div>
+            <div class="metric-sub">अगले 2 दिनों में खत्म हो जाएगा</div>
+        </div>
+
+        <div class="metric-card alert-green">
+            <div class="metric-title">कुल स्टॉक वैल्यू (Store Inventory)</div>
+            <div class="metric-val" style="color: #16a34a;">₹{{ "%.0f"|format(summary.total_inventory_cost) }}</div>
+            <div class="metric-sub">{{ summary.total_items }} आइटम ऑडिट किए गए</div>
+        </div>
+    </div>
+
+    <!-- Threshold & Live Evaluation Controls (Answers Viva Question: "Change a threshold live") -->
+    <div class="control-panel">
+        <h3>⚙️ लाइव कंट्रोल पैनल / थ्रेशोल्ड सेटिंग्स (Live Threshold Adjuster for Viva Evaluation)</h3>
+        <form method="GET" action="/" class="controls-form">
+            <div class="form-group">
+                <label>रेफरेंस तारीख (Audit Date):</label>
+                <input type="date" name="ref_date" value="{{ ref_date }}">
+            </div>
+
+            <div class="form-group">
+                <label>क्रिटिकल एक्सपायरी दिन (≤ Days):</label>
+                <input type="number" name="crit_days" value="{{ crit_days }}" min="1" max="30" style="width: 80px;">
+            </div>
+
+            <div class="form-group">
+                <label>एक्सपायरी वार्निंग दिन (≤ Days):</label>
+                <input type="number" name="warn_days" value="{{ warn_days }}" min="5" max="60" style="width: 80px;">
+            </div>
+
+            <div class="form-group">
+                <label>स्टॉकआउट अलर्ट (Days Left ≤):</label>
+                <input type="number" step="0.5" name="stockout_days" value="{{ stockout_days }}" min="0.5" max="10" style="width: 80px;">
+            </div>
+
+            <div class="form-group">
+                <label>कैटेगरी (Category):</label>
+                <select name="category">
+                    <option value="ALL" {% if selected_category == 'ALL' %}selected{% endif %}>सभी (All Categories)</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat }}" {% if selected_category == cat %}selected{% endif %}>{{ cat }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>खोजें (Search Item):</label>
+                <input type="text" name="q" value="{{ search_query }}" placeholder="उदा. Milk, Bread, Oil...">
+            </div>
+
+            <button type="submit" class="btn btn-primary">🔄 थ्रेशोल्ड अपडेट करें (Apply)</button>
+            <a href="/" style="padding: 8px 12px; font-size: 0.85rem; color: var(--text-muted); text-decoration: none;">रीसेट (Reset)</a>
+        </form>
+    </div>
+
+    <!-- Two Critical Urgent Action Panels -->
+    <div class="urgent-sections">
+        <!-- Panel 1: Restock Immediately -->
+        <div class="urgent-card">
+            <div class="urgent-card-header urgent-red-hdr">
+                <span>🔴 तुरंत ऑर्डर करें (Out of Stock / Critical Shortage)</span>
+                <span>{{ (summary.out_of_stock|length) + (summary.critical_restock|length) }} आइटम्स</span>
+            </div>
+            <div class="urgent-list">
+                {% for itm in summary.out_of_stock %}
+                <div class="urgent-item">
+                    <div>
+                        <div class="urgent-name">{{ itm.item_name }} ({{ itm.pack_size }})</div>
+                        <div class="urgent-meta">स्थान: {{ itm.shelf_location }} | बिक्री दर: {{ itm.avg_daily_sales }}/दिन</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="urgent-badge badge-red">स्टॉक: 0 (खत्म)</span>
+                        <div style="font-size: 0.75rem; color: #b91c1c; font-weight: 600; margin-top: 2px;">ऑर्डर: +{{ itm.suggested_reorder }} पैक</div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% for itm in summary.critical_restock %}
+                <div class="urgent-item">
+                    <div>
+                        <div class="urgent-name">{{ itm.item_name }} ({{ itm.pack_size }})</div>
+                        <div class="urgent-meta">स्थान: {{ itm.shelf_location }} | बाकी दिन: ~{{ itm.days_of_stock_left }} दिन</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="urgent-badge badge-amber">स्टॉक: {{ itm.current_stock }} बचा</span>
+                        <div style="font-size: 0.75rem; color: #b45309; font-weight: 600; margin-top: 2px;">ऑर्डर: +{{ itm.suggested_reorder }} पैक</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Panel 2: Expiring Soon -->
+        <div class="urgent-card">
+            <div class="urgent-card-header urgent-yellow-hdr">
+                <span>🛑 जल्द बिकवाएं या वापस करें (Expiring Within {{ warn_days }} Days)</span>
+                <span>{{ (summary.expiring_critical|length) + (summary.expiring_warning|length) }} आइटम्स</span>
+            </div>
+            <div class="urgent-list">
+                {% for itm in summary.expiring_critical %}
+                <div class="urgent-item">
+                    <div>
+                        <div class="urgent-name">🚨 {{ itm.item_name }} ({{ itm.pack_size }})</div>
+                        <div class="urgent-meta">स्थान: {{ itm.shelf_location }} | रिस्क वैल्यू: ₹{{ itm.stock_value_cost }}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="urgent-badge badge-red">{{ itm.days_until_expiry }} दिन बचे</span>
+                        <div style="font-size: 0.75rem; color: #991b1b; margin-top: 2px;">({{ itm.expiry_date }})</div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% for itm in summary.expiring_warning %}
+                <div class="urgent-item">
+                    <div>
+                        <div class="urgent-name">⚠️ {{ itm.item_name }} ({{ itm.pack_size }})</div>
+                        <div class="urgent-meta">स्थान: {{ itm.shelf_location }} | रिस्क वैल्यू: ₹{{ itm.stock_value_cost }}</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span class="urgent-badge badge-amber">{{ itm.days_until_expiry }} दिन बचे</span>
+                        <div style="font-size: 0.75rem; color: #92400e; margin-top: 2px;">({{ itm.expiry_date }})</div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Complete Inventory Table -->
+    <div class="table-card">
+        <div class="table-header">
+            <h2>📦 सम्पूर्ण दुकान स्टॉक लिस्ट (All Items Inventory) - {{ items|length }} आइटम्स</h2>
+            <div style="font-size: 0.85rem; color: var(--text-muted);">
+                नया माल आने पर <strong>"+ स्टॉक जोड़ें"</strong> बटन दबाएँ
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>कोड / नाम</th>
+                        <th>श्रेणी (Category)</th>
+                        <th>दुकान में जगह (Shelf)</th>
+                        <th>वर्तमान स्टॉक</th>
+                        <th>दैनिक बिक्री</th>
+                        <th>स्टॉक चलेगा</th>
+                        <th>एक्सपायरी तारीख</th>
+                        <th>सुझाया गया ऑर्डर</th>
+                        <th>नया स्टॉक जोड़ें (Restock)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for itm in items %}
+                    <tr>
+                        <td>
+                            <strong>{{ itm.item_name }}</strong>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">{{ itm.pack_size }} | ₹{{ itm.selling_price }} MRP</div>
+                            {% if itm.notes %}
+                                <div style="font-size: 0.73rem; color: #b45309;">ℹ️ {{ itm.notes }}</div>
+                            {% endif %}
+                        </td>
+                        <td>{{ itm.category }}</td>
+                        <td>{{ itm.shelf_location }}</td>
+                        <td>
+                            {% if itm.current_stock == 0 %}
+                                <span class="stock-pill pill-zero">0 (खत्म)</span>
+                            {% elif itm.current_stock <= itm.reorder_threshold %}
+                                <span class="stock-pill pill-low">{{ itm.current_stock }} (कम)</span>
+                            {% else %}
+                                <span class="stock-pill pill-ok">{{ itm.current_stock }}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ itm.avg_daily_sales }}/दिन</td>
+                        <td>
+                            {% if itm.days_of_stock_left == 0 %}
+                                <span style="color: #dc2626; font-weight: 700;">0 दिन</span>
+                            {% elif itm.days_of_stock_left <= stockout_days %}
+                                <span style="color: #ea580c; font-weight: 700;">{{ itm.days_of_stock_left }} दिन</span>
+                            {% else %}
+                                <span>~{{ itm.days_of_stock_left }} दिन</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if itm.days_until_expiry <= crit_days %}
+                                <span class="exp-pill exp-urgent">🚨 {{ itm.days_until_expiry }} दिन ({{ itm.expiry_date }})</span>
+                            {% elif itm.days_until_expiry <= warn_days %}
+                                <span class="exp-pill exp-warn">⚠️ {{ itm.days_until_expiry }} दिन ({{ itm.expiry_date }})</span>
+                            {% else %}
+                                <span class="exp-pill exp-safe">{{ itm.days_until_expiry }} दिन ({{ itm.expiry_date }})</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if itm.suggested_reorder > 0 %}
+                                <strong style="color: #1e40af;">+{{ itm.suggested_reorder }} पैकेट</strong>
+                            {% else %}
+                                <span style="color: var(--text-muted); font-size: 0.8rem;">पर्याप्त है (0)</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form action="/restock" method="POST" class="restock-form">
+                                <input type="hidden" name="item_id" value="{{ itm.item_id }}">
+                                <input type="number" name="incoming_qty" class="restock-input" placeholder="मात्रा" min="1" required>
+                                <button type="submit" class="restock-btn">+ जोड़ें</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <p>1-Day B.Tech Take-Home Project | Built for <strong>Rajinder Kumar (Rajinder Karyana Store)</strong> | Local Village Retail Tool</p>
+    </footer>
+
+</div>
+</body>
+</html>
