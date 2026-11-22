@@ -9,7 +9,7 @@
 ---
 
 ## 🎥 3-Minute Video Walkthrough
-- **Screen Recording:** [Watch 3-minute Demo Walkthrough Video](https://youtu.be/placeholder-demo-rajinder-kirana) *(Replace with your unlisted YouTube or Google Drive video link)*
+- **Screen Recording:** [Watch 3-minute Demo Walkthrough Video](https://drive.google.com/file/d/1nGHWeVIJvXuTQ76PmLdq7Iit8qecAHXC/view?usp=sharing) (Live interface demonstration showing stock alert cards, dynamic threshold updates, and restock/sell/return tracking)
 
 ---
 
