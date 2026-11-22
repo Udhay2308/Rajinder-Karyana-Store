@@ -103,11 +103,14 @@
         .exp-warn { color: #d97706; font-weight: 600; }
         .exp-safe { color: #16a34a; }
 
-        /* Restock mini form */
-        .restock-form { display: flex; gap: 6px; align-items: center; }
-        .restock-input { width: 60px; padding: 4px 6px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.85rem; }
-        .restock-btn { padding: 4px 8px; background: #059669; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.78rem; font-weight: 600; }
+        /* Restock & Stock Action mini form */
+        .restock-form { display: flex; gap: 4px; align-items: center; }
+        .action-select { padding: 4px 6px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.78rem; background: #f8fafc; font-weight: 600; color: #334155; }
+        .restock-input { width: 50px; padding: 4px 6px; border: 1px solid var(--border); border-radius: 4px; font-size: 0.82rem; text-align: center; }
+        .restock-btn { padding: 4px 10px; background: #059669; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 0.78rem; font-weight: 600; white-space: nowrap; }
         .restock-btn:hover { background: #047857; }
+        .mini-return-btn { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; padding: 2px 6px; border-radius: 4px; font-size: 0.72rem; font-weight: 600; cursor: pointer; transition: 0.15s; margin-top: 3px; }
+        .mini-return-btn:hover { background: #fecaca; }
 
         /* Footer */
         footer { text-align: center; font-size: 0.82rem; color: var(--text-muted); padding: 16px 0; }
@@ -273,6 +276,12 @@
                     <div style="text-align: right;">
                         <span class="urgent-badge badge-red">{{ itm.days_until_expiry }} दिन बचे</span>
                         <div style="font-size: 0.75rem; color: #991b1b; margin-top: 2px;">({{ itm.expiry_date }})</div>
+                        <form action="/update_stock" method="POST" style="margin-top: 3px;">
+                            <input type="hidden" name="item_id" value="{{ itm.item_id }}">
+                            <input type="hidden" name="action_type" value="RETURN">
+                            <input type="hidden" name="qty" value="1">
+                            <button type="submit" class="mini-return-btn" title="डिस्ट्रीब्यूटर को 1 पैकेट वापस करें">↩️ 1 वापस करें</button>
+                        </form>
                     </div>
                 </div>
                 {% endfor %}
@@ -285,6 +294,12 @@
                     <div style="text-align: right;">
                         <span class="urgent-badge badge-amber">{{ itm.days_until_expiry }} दिन बचे</span>
                         <div style="font-size: 0.75rem; color: #92400e; margin-top: 2px;">({{ itm.expiry_date }})</div>
+                        <form action="/update_stock" method="POST" style="margin-top: 3px;">
+                            <input type="hidden" name="item_id" value="{{ itm.item_id }}">
+                            <input type="hidden" name="action_type" value="RETURN">
+                            <input type="hidden" name="qty" value="1">
+                            <button type="submit" class="mini-return-btn" title="डिस्ट्रीब्यूटर को 1 पैकेट वापस करें">↩️ 1 वापस करें</button>
+                        </form>
                     </div>
                 </div>
                 {% endfor %}
@@ -297,7 +312,7 @@
         <div class="table-header">
             <h2>📦 सम्पूर्ण दुकान स्टॉक लिस्ट (All Items Inventory) - {{ items|length }} आइटम्स</h2>
             <div style="font-size: 0.85rem; color: var(--text-muted);">
-                नया माल आने पर <strong>"+ स्टॉक जोड़ें"</strong> बटन दबाएँ
+                बिक्री (Sell), नया माल (Restock) या वापसी (Return) के लिए <strong>"अपडेट"</strong> बटन दबाएँ
             </div>
         </div>
         <div class="table-responsive">
@@ -312,7 +327,7 @@
                         <th>स्टॉक चलेगा</th>
                         <th>एक्सपायरी तारीख</th>
                         <th>सुझाया गया ऑर्डर</th>
-                        <th>नया स्टॉक जोड़ें (Restock)</th>
+                        <th>स्टॉक एक्शन (बिक्री / नया माल / वापसी)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -363,10 +378,15 @@
                             {% endif %}
                         </td>
                         <td>
-                            <form action="/restock" method="POST" class="restock-form">
+                            <form action="/update_stock" method="POST" class="restock-form">
                                 <input type="hidden" name="item_id" value="{{ itm.item_id }}">
-                                <input type="number" name="incoming_qty" class="restock-input" placeholder="मात्रा" min="1" required>
-                                <button type="submit" class="restock-btn">+ जोड़ें</button>
+                                <select name="action_type" class="action-select">
+                                    <option value="SELL">🛒 बिक्री (-)</option>
+                                    <option value="RESTOCK">📥 आया (+)</option>
+                                    <option value="RETURN">↩️ वापसी (-)</option>
+                                </select>
+                                <input type="number" name="qty" class="restock-input" placeholder="मात्रा" min="1" value="1" required>
+                                <button type="submit" class="restock-btn">अपडेट</button>
                             </form>
                         </td>
                     </tr>

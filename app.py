@@ -71,22 +71,31 @@ def dashboard():
     )
 
 
+@app.route('/update_stock', methods=['POST'])
 @app.route('/restock', methods=['POST'])
-def restock_item():
-    """Updates incoming stock when distributor brings goods."""
+def update_stock():
+    """
+    Handles stock updates:
+    - RESTOCK: Incoming goods from distributor (+)
+    - SELL: Customer sale (-)
+    - RETURN: Returning expired/damaged goods to distributor (-)
+    """
     item_id = request.form.get('item_id', '').strip()
+    action_type = request.form.get('action_type', 'RESTOCK').upper()
     try:
-        incoming_qty = int(request.form.get('incoming_qty', 0))
+        qty = int(request.form.get('qty', request.form.get('incoming_qty', 0)))
     except ValueError:
-        flash("गलत मात्रा (Invalid quantity entered)", "error")
+        flash("अमान्य मात्रा (Invalid quantity entered)", "error")
         return redirect(url_for('dashboard'))
 
-    if incoming_qty <= 0:
-        flash("कृपया 1 या उससे अधिक मात्रा जोड़ें (Please enter quantity >= 1)", "warning")
+    if qty <= 0:
+        flash("कृपया कम से कम 1 मात्रा दर्ज करें (Please enter quantity >= 1)", "warning")
         return redirect(url_for('dashboard'))
 
     today_str = date.today().strftime("%Y-%m-%d")
     updated = False
+    item_name = ""
+    new_stock = 0
 
     rows = []
     with open(DATA_FILE, mode='r', encoding='utf-8') as f:
@@ -98,14 +107,34 @@ def restock_item():
                     old_stock = int(float(r['current_stock']))
                 except ValueError:
                     old_stock = 0
-                new_stock = old_stock + incoming_qty
-                r['current_stock'] = str(new_stock)
-                r['last_restocked_date'] = today_str
-                # Clear out-of-stock note if present
-                if "OUT OF STOCK" in r.get('notes', ''):
-                    r['notes'] = f"Restocked +{incoming_qty} on {today_str}"
-                updated = True
+                
                 item_name = r['item_name']
+                if action_type == 'RESTOCK':
+                    new_stock = old_stock + qty
+                    r['current_stock'] = str(new_stock)
+                    r['last_restocked_date'] = today_str
+                    if "OUT OF STOCK" in r.get('notes', ''):
+                        r['notes'] = f"Restocked +{qty} on {today_str}"
+                    flash(f"📥 {item_name}: {qty} पैकेट नया स्टॉक जोड़ा गया (वर्तमान स्टॉक: {new_stock})", "success")
+                elif action_type == 'SELL':
+                    if old_stock < qty:
+                        flash(f"⚠️ स्टॉक कम है! {item_name} केवल {old_stock} बचा है, {qty} नहीं बेच सकते।", "error")
+                        return redirect(url_for('dashboard'))
+                    new_stock = old_stock - qty
+                    r['current_stock'] = str(new_stock)
+                    if new_stock == 0:
+                        r['notes'] = f"OUT OF STOCK - sold out on {today_str}"
+                    flash(f"🛒 {item_name}: {qty} पैकेट बिक्री दर्ज हुई (बाकी स्टॉक: {new_stock})", "success")
+                elif action_type == 'RETURN':
+                    if old_stock < qty:
+                        flash(f"⚠️ दुकान में {item_name} के केवल {old_stock} पैकेट हैं, {qty} वापस नहीं हो सकते।", "error")
+                        return redirect(url_for('dashboard'))
+                    new_stock = old_stock - qty
+                    r['current_stock'] = str(new_stock)
+                    r['notes'] = f"Returned {qty} packs to distributor on {today_str}"
+                    flash(f"↩️ {item_name}: {qty} पैकेट डिस्ट्रीब्यूटर को वापस किए गए (बाकी स्टॉक: {new_stock})", "warning")
+                
+                updated = True
             rows.append(r)
 
     if updated:
@@ -113,7 +142,6 @@ def restock_item():
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
             writer.writerows(rows)
-        flash(f"✅ {item_name}: {incoming_qty} पैकेट स्टॉक में जोड़े गए (New Stock: {new_stock})", "success")
     else:
         flash("आइटम नहीं मिला (Item not found)", "error")
 
