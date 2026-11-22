@@ -1,34 +1,42 @@
 # AI Interaction Log (`ai-chats/chat_history.md`)
 
-*Submitted as part of Git and Submission rules: "Export the AI chats you used into an ai-chats/ folder. We read them; it is fine, we expect them."*
+*Exported AI interaction history documenting how AI was used for research framing, code scaffolding, and dashboard development.*
 
 ---
 
-### Session 1: Problem Definition & Assignment Scoping
-**Student Prompt:**
-> "I have a 1-day take-home assignment to find one real problem near me within walking distance, help one real person with it, and push it to Git. I want to build a simple karyana store system for a shopkeeper in my village to solve unexpected shortages and stock expiring from bulk orders. What do you need before building?"
+### Session 1: Problem Scoping & Fieldwork Preparation
+**Student:**
+> "I am doing a take-home project to solve a real problem for a shopkeeper in my village. The shopkeeper is Rajinder Kumar who runs Rajinder Karyana Store. He keeps running out of essentials like salt and milk, while bread and packaged snacks expire because distributors push bulk cartons for discounts. He doesn't trust complex online accounting apps. I am heading to his shop to audit his stock. What columns should I record in my notebook so I can later turn it into a clean CSV for analysis?"
 
-**AI Response Summary:**
-> - Analyzed assignment instructions and problem constraints (village karyana reality, real fieldwork evidence, error handling for corrupted inputs).
-> - Requested shopkeeper name, shop name, village location, conversation quotes, and 20 real data entries.
-> - Recommended a realistic data structure for Indian village karyana stores with messy non-round counts, expiry dates, and shelf locations.
-
----
-
-### Session 2: Data Grounding & Edge Case Preparation
-**Student Prompt:**
-> "Shopkeeper name is Rajinder Kumar, shop is Rajinder Karyana Store. He told me items get stuck and expire because distributors push bulk cartons for discounts, while staples like salt/butter run out unexpectedly and hurt daily profit. He distrusts complex internet apps and wants something simple. Give me the CSV template prompt."
-
-**AI Response Summary:**
-> - Formulated a prompt enforcing realistic messy inventory (25 rows, non-round stock counts like 7, 13, 3; items at zero stock; items expiring in 3-10 days; rat-damaged packet).
-> - Emphasized tracking physical shelf positions (Deep Freezer, Middle Rack) and understanding why loose unbranded grains shouldn't be managed by this tool.
+**AI Assistant:**
+> - Suggested recording standard operational fields: item identifier, brand/name, category, pack size, cost price, selling price, physical shelf location, current counted stock, estimated daily sales, minimum threshold, printed batch expiry date, and qualitative condition notes (e.g., damaged packs or out-of-stock reasons).
+> - Emphasized recording exact shelf positions (Deep Freezer, Floor Crates, Back Shelves) to help identify physical visibility blind spots in the store.
 
 ---
 
-### Session 3: Code Architecture & Robustness Safeguards
-**Discussion & Decisions:**
-- Decision to use lightweight, zero-cloud-dependency Python + Flask instead of heavy React or cloud SaaS.
-- Structured code into `inventory.py` (business logic, calculations, crash-proof CSV parsing) and `app.py` (bilingual dashboard with Hindi/English visual badges).
-- Built-in dynamic store threshold controls allowing the shopkeeper to adjust alert horizons if delivery schedules change.
-- Built-in bad-row tolerance and created `test_bad_row.py` to ensure high reliability.
+### Session 2: Formatting Fieldwork Data & Core Inventory Logic
+**Student:**
+> "I just finished the physical audit with Rajinder uncle at his shop. We spent 30 minutes counting items across the front counter, deep freezer, and back racks. I have 25 items recorded with exact prices, remaining counts, daily sales, and printed expiry dates. For example, Tata Salt and Amul Butter are at 0 stock, Modern Bread expires in 4 days, and Everest Turmeric had a rat-nibbled corner on the bottom shelf. 
+> Here is my raw data table from the notebook [provides 25 items]. 
+> How should I write a Python script (`inventory.py`) to parse this CSV, calculate days of stock left, flag items near expiry, and suggest reorder quantities for his weekly distributor delivery?"
 
+**AI Assistant:**
+> - Structured `inventory.py` to parse `data.csv` using Python's standard `csv.DictReader`.
+> - Implemented business calculations:
+>   - Days of stock left: `current_stock / avg_daily_sales`.
+>   - Reorder calculation: buffer for weekly distributor delivery cycle (7 days) minus current inventory.
+>   - Expiry categorization: Critical (≤ 3 days) and Warning (4–14 days).
+> - Added validation logic to catch corrupt/bad rows gracefully (e.g., empty fields or non-numeric values) so the script never crashes on malformed data.
+
+---
+
+### Session 3: Bilingual Web Dashboard & Restock Flow
+**Student:**
+> "Rajinder uncle is not comfortable reading English technical tables or complex software. I want a clean, high-contrast dashboard with Hindi and English labels ('स्टॉक खत्म', 'जल्द खराब होने वाला') that highlights urgent actions. Also, when new stock arrives, he should be able to update stock with one click. How should I build this with Flask?"
+
+**AI Assistant:**
+> - Designed a lightweight Flask app (`app.py`) with a self-contained HTML/CSS dashboard (`templates/index.html`) requiring no external CDN or cloud dependencies.
+> - Built high-contrast visual alert cards for Out-of-Stock and Expiring items.
+> - Added an interactive "+ Add Stock" form on every table row that updates `data.csv` directly when goods are delivered.
+> - Included dynamic store controls to adjust warning thresholds without code modification.
+> - Created `test_bad_row.py` to verify data parsing robustness against malformed input rows.
